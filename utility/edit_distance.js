@@ -42,8 +42,8 @@ function getEditDistance(string1, string2) {
   return matrix[matrix.length - 1][matrix[matrix.length - 1].length - 1];
 }
 
-console.log(getEditDistance("robby", "bob"));
-
 // getEditDistance('bob', 'lob') => 1
 // getEditDistance('bob', 'bob') => 0
 // getEditDistance('robby', 'lob') => 3
+
+module.exports = getEditDistance;

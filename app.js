@@ -1,3 +1,5 @@
+const getEditDistance = require("./utility/edit_distance");
+
 const express = require("express");
 
 // express
@@ -41,36 +43,3 @@ app.get("/gamenews", async (req, res) => {
 app.use((req, res) => {
   res.status(404).sendFile("./views/error404.html", { root: __dirname });
 });
-
-function getEditDistance(string1, string2) {
-  if (string1 === string2) {
-    return 0;
-  }
-
-  let matrix = [[0]];
-
-  for (let i = 0; i < string1.length; i++) {
-    matrix[0].push(i + 1);
-  }
-
-  for (let i = 0; i < string2.length; i++) {
-    matrix.push([i + 1, ...Array(string1.length)]);
-  }
-
-  for (let i = 1; i < matrix.length; i++) {
-    for (let j = 1; j < matrix[i].length; j++) {
-      let minValue =
-        matrix[i - 1][j - 1] + (string1[i - 1] === string2[i - 1] ? 0 : 1);
-
-      if (matrix[i - 1][j] + 1 < minValue) {
-        minValue = matrix[i - 1][j] + 1;
-      } else if (matrix[i][j - 1] + 1 < minValue) {
-        minValue = matrix[i][j - 1] + 1;
-      }
-
-      matrix[i][j] = minValue;
-    }
-  }
-
-  return matrix[matrix.length - 1][matrix[matrix.length - 1].length - 1];
-}
