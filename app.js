@@ -5,9 +5,6 @@ const express = require("express");
 // express
 const app = express();
 
-// register view engine
-app.set("view engine", "ejs");
-
 // listen for requests
 app.listen(3000);
 
@@ -18,7 +15,7 @@ app.get("/gamenews", async (req, res) => {
   );
   const data = await response.json();
 
-  const gameToFind = "Billy";
+  const gameToFind = "Darkest Dungeon";
 
   let currentMinValue = 99999;
   let currentGame = { appid: 0, gameName: "" };
