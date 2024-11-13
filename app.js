@@ -81,7 +81,3 @@ app.get("/gamenews", async (req, res) => {
   }
   res.json(newsInformation);
 });
-
-app.use((req, res) => {
-  res.status(404).sendFile("./views/error404.html", { root: __dirname });
-});
