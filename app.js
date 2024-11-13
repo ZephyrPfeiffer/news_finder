@@ -19,13 +19,11 @@ app.get("/gamenews", async (req, res) => {
   const steamGames = await response.json();
 
   let newsRequestParameters = {
-    gameName: "",
+    gameName: "omega strikers",
     newsCount: 3,
     newsLength: 1000,
     ...req.body,
   };
-
-  console.log(req.body);
 
   // intialize variable to hold first edit distance
   let minEditDistance = getEditDistance(
@@ -67,21 +65,21 @@ app.get("/gamenews", async (req, res) => {
   const gameNews = await newsData.json();
 
   // create initial response object
-  let requestedInformation = {
+  let newsInformation = {
     gameName: gameInfo.gameName,
     newsItems: [],
   };
 
   // populate response object with relevent game news information
   for (let i = 0; i < gameNews.appnews.newsitems.length; i++) {
-    requestedInformation.newsItems.push({
+    newsInformation.newsItems.push({
       title: gameNews.appnews.newsitems[i].title,
       author: gameNews.appnews.newsitems[i].author,
       url: gameNews.appnews.newsitems[i].url,
       newsContent: gameNews.appnews.newsitems[i].contents,
     });
   }
-  res.json(requestedInformation);
+  res.json(newsInformation);
 });
 
 app.use((req, res) => {
