@@ -15,26 +15,45 @@ app.get("/gamenews", async (req, res) => {
   );
   const data = await response.json();
 
-  const gameToFind = "Darkest Dungeon";
+  const gameToFind = "the last spell".toLowerCase();
 
-  let currentMinValue = 99999;
-  let currentGame = { appid: 0, gameName: "" };
+  let currentMinValue = getEditDistance(
+    gameToFind,
+    data.applist.apps[0].name.toLowerCase()
+  );
 
-  for (let i = 0; i < data.applist.apps.length; i++) {
-    let editDistance = getEditDistance(gameToFind, data.applist.apps[i].name);
+  let currentGame = {
+    appid: data.applist.apps[0].appid,
+    gameName: data.applist.apps[0].name,
+  };
+
+  for (let i = 1; i < data.applist.apps.length; i++) {
+    let editDistance = getEditDistance(
+      gameToFind,
+      data.applist.apps[i].name.toLowerCase()
+    );
 
     if (editDistance === 0) {
       currentGame.appid = data.applist.apps[i].appid;
       currentGame.gameName = data.applist.apps[i].name;
       break;
-    } else if (editDistance < currentMinValue) {
+    }
+    if (editDistance < currentMinValue) {
       currentMinValue = editDistance;
       currentGame.appid = data.applist.apps[i].appid;
       currentGame.gameName = data.applist.apps[i].name;
     }
   }
 
-  res.json(currentGame);
+  console.log(currentGame);
+
+  const newsData = await fetch(
+    `http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${currentGame.appid}&count=10&maxlength=1000&format=json`
+  );
+
+  const gameNews = await newsData.json();
+
+  res.json(gameNews);
 });
 
 app.use((req, res) => {

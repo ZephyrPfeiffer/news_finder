@@ -10,32 +10,33 @@ function getEditDistance(string1, string2) {
   // loop through the array (starting from 1,1 position within 2d array) and find minimum number of changes that need to be made to convert current substring to other substring (follow edit distance formula)
   // once we loop through the whole 2d array, return the edit distance
 
-  if (string1 === string2) {
-    return 0;
-  }
+  // if (string1 === string2) {
+  //   return 0;
+  // }
 
-  let matrix = [[0]];
+  let matrix = [];
 
-  for (let i = 0; i < string1.length; i++) {
-    matrix[0].push(i + 1);
-  }
-
-  for (let i = 0; i < string2.length; i++) {
-    matrix.push([i + 1, ...Array(string1.length)]);
-  }
-
-  for (let i = 1; i < matrix.length; i++) {
-    for (let j = 1; j < matrix[i].length; j++) {
-      let minValue =
-        matrix[i - 1][j - 1] + (string1[i - 1] === string2[i - 1] ? 0 : 1);
-
-      if (matrix[i - 1][j] + 1 < minValue) {
-        minValue = matrix[i - 1][j] + 1;
-      } else if (matrix[i][j - 1] + 1 < minValue) {
-        minValue = matrix[i][j - 1] + 1;
+  for (let i = 0; i <= string1.length; i++) {
+    matrix[i] = [];
+    for (let j = 0; j <= string2.length; j++) {
+      if (i === 0) {
+        matrix[i][j] = j;
+      } else if (j === 0) {
+        matrix[i][j] = i;
+      } else {
+        matrix[i][j] = 0;
       }
+    }
+  }
 
-      matrix[i][j] = minValue;
+  for (let i = 1; i <= string1.length; i++) {
+    for (let j = 1; j <= string2.length; j++) {
+      const deletionCost = matrix[i - 1][j] + 1;
+      const insertionCost = matrix[i][j - 1] + 1;
+      const substituionCost =
+        matrix[i - 1][j - 1] + (string1[i - 1] === string2[j - 1] ? 0 : 1);
+
+      matrix[i][j] = Math.min(deletionCost, insertionCost, substituionCost);
     }
   }
 
