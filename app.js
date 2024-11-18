@@ -26,6 +26,7 @@ app.get("/gamenews", async (req, res) => {
     gameName: "lethal company",
     newsCount: 10,
     newsLength: 1000,
+    sort: "descending",
     ...req.body,
   };
 
