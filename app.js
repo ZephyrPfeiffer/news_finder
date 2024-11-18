@@ -12,6 +12,8 @@ app.use(express.json());
 app.listen(3000);
 
 // routes
+
+// retrieves news information for a specified game
 app.get("/gamenews", async (req, res) => {
   // request game name and appid information for all steam games
   const response = await fetch(
@@ -19,26 +21,27 @@ app.get("/gamenews", async (req, res) => {
   );
   const steamGames = await response.json();
 
+  // initialize default request parmeters and overwrite any default values with users provided ones
   let newsRequestParameters = {
-    gameName: "omega strikers",
-    newsCount: 3,
+    gameName: "lethal company",
+    newsCount: 10,
     newsLength: 1000,
     ...req.body,
   };
 
-  // intialize variable to hold first edit distance
+  // create variable to hold first edit distance for comparsion later
   let minEditDistance = getEditDistance(
     newsRequestParameters.gameName.toLowerCase(),
     steamGames.applist.apps[0].name.toLowerCase()
   );
 
-  // intialize object to hold info on game whose name has the current min edit distance value with user provided game name
+  // create object to hold info on game that matches
   let gameInfo = {
     appid: steamGames.applist.apps[0].appid,
     gameName: steamGames.applist.apps[0].name,
   };
 
-  // iterate through game info to find game name with lowest edit distance to user provided game name
+  // iterate through game info to find game name with lowest edit distance when compared user provided game name
   for (let i = 1; i < steamGames.applist.apps.length; i++) {
     let editDistance = getEditDistance(
       newsRequestParameters.gameName.toLowerCase(),
@@ -65,13 +68,13 @@ app.get("/gamenews", async (req, res) => {
 
   const gameNews = await newsData.json();
 
-  // create initial response object
+  // create object that will hold all information that was requested into a more readable format
   let newsInformation = {
     gameName: gameInfo.gameName,
     newsItems: [],
   };
 
-  // populate response object with relevent game news information
+  // populate response object with relevent information
   for (let i = 0; i < gameNews.appnews.newsitems.length; i++) {
     newsInformation.newsItems.push({
       title: gameNews.appnews.newsitems[i].title,
