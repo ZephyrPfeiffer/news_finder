@@ -15,20 +15,20 @@ app.listen(3000);
 
 // retrieves news information for a specified game
 app.get("/gamenews", async (req, res) => {
-  // request game name and appid information for all steam games
-  const response = await fetch(
-    "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
-  );
-  const steamGames = await response.json();
-
   // initialize default request parmeters and overwrite any default values with users provided ones
   let newsRequestParameters = {
     gameName: "lethal company",
     newsCount: 10,
     newsLength: 1000,
-    sort: "descending",
+    sort: null,
     ...req.body,
   };
+
+  // request game name and appid information for all steam games
+  const response = await fetch(
+    "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+  );
+  const steamGames = await response.json();
 
   // create variable to hold first edit distance for comparsion later
   let minEditDistance = getEditDistance(
@@ -79,6 +79,9 @@ app.get("/gamenews", async (req, res) => {
   for (let i = 0; i < gameNews.appnews.newsitems.length; i++) {
     newsInformation.newsItems.push({
       title: gameNews.appnews.newsitems[i].title,
+      date: new Date(
+        gameNews.appnews.newsitems[i].date * 1000
+      ).toLocaleDateString(),
       author: gameNews.appnews.newsitems[i].author,
       url: gameNews.appnews.newsitems[i].url,
       newsContent: gameNews.appnews.newsitems[i].contents,
