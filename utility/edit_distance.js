@@ -10,9 +10,9 @@ function getEditDistance(string1, string2) {
   // loop through the array (starting from 1,1 position within 2d array) and find minimum number of changes that need to be made to convert current substring to other substring (follow edit distance formula)
   // once we loop through the whole 2d array, return the edit distance
 
-  // if (string1 === string2) {
-  //   return 0;
-  // }
+  if (string1 === string2) {
+    return 0;
+  }
 
   let matrix = [];
 
