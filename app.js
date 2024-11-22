@@ -21,8 +21,11 @@ app.get("/gamenews", async (req, res) => {
     newsCount: 10,
     newsLength: 1000,
     sort: null,
-    ...req.body,
   };
+
+  if (req.body) {
+    newsRequestParameters = { ...newsRequestParameters, ...req.body };
+  }
 
   // request game name and appid information for all steam games
   const response = await fetch(
@@ -87,5 +90,6 @@ app.get("/gamenews", async (req, res) => {
       newsContent: gameNews.appnews.newsitems[i].contents,
     });
   }
+
   res.json(newsInformation);
 });
