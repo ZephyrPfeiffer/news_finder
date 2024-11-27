@@ -24,6 +24,7 @@ app.get("/gamenews", async (req, res) => {
     dateSort: "",
   };
 
+  // update news request parameters object with values from body object in request if it exists
   if (req.body) {
     newsRequestParameters = { ...newsRequestParameters, ...req.body };
   }
