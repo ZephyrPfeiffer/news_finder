@@ -1,4 +1,5 @@
 const getEditDistance = require("./utility/edit_distance");
+const sortNews = require("./utility/date_sort");
 
 const express = require("express");
 
@@ -71,6 +72,13 @@ app.get("/gamenews", async (req, res) => {
   );
 
   const gameNews = await newsData.json();
+
+  if (newsRequestParameters.dateSort) {
+    gameNews.appnews.newsitems = sortNews(
+      gameNews.appnews.newsitems,
+      newsRequestParameters.dateSort
+    );
+  }
 
   // create object that will hold all information that was requested into a more readable format
   let newsInformation = {
