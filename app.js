@@ -82,7 +82,7 @@ app.get(
     .trim()
     .isLength({ min: 1, max: 50 })
     .withMessage(
-      "gameName character length must be greater than zero and less than or equal to 50."
+      "gameName character length must be equal to or greater than 1 and less than or equal to 50."
     )
     .escape(),
   async (req, res) => {
