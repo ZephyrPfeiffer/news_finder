@@ -76,13 +76,13 @@ app.get(
     }),
   body("gameName")
     .notEmpty()
-    .withMessage("gameName property value cannot be empty.")
+    .withMessage("gameName cannot be empty.")
     .isString()
-    .withMessage("gameName property value must be of type string.")
+    .withMessage("gameName must be of type string.")
     .trim()
     .isLength({ min: 1, max: 50 })
     .withMessage(
-      "gameName property value character length must be greater than zero and less than or equal to 50."
+      "gameName character length must be greater than zero and less than or equal to 50."
     )
     .escape(),
   async (req, res) => {
