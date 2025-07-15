@@ -4,18 +4,16 @@ const { body, validationResult } = require("express-validator");
 
 const express = require("express");
 
-// express
 const app = express();
 
 // middleware
 app.use(express.json());
 
-// listen for requests
 app.listen(3000);
 
 // routes
 
-// retrieves news information for a specified game
+// retrieves news information for a user specified game
 app.get(
   "/gamenews",
   // check for properties that shouldn't be inside body object
@@ -47,7 +45,7 @@ app.get(
         ", "
       )}`;
     }),
-  // make sure that all required properties are inside body object
+  // check to make sure that all required properties are inside body object
   body()
     .custom((body, { req }) => {
       const validProperties = [
@@ -76,12 +74,24 @@ app.get(
         ", "
       )}`;
     }),
-
+  body("gameName")
+    .notEmpty()
+    .withMessage("gameName property value cannot be empty.")
+    .isString()
+    .withMessage("gameName property value must be of type string.")
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage(
+      "gameName property value character length must be greater than zero and less than or equal to 50."
+    )
+    .escape(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+
+    console.log(req.body);
 
     // initialize default request parmeters and overwrite any default values with user provided ones
     let newsRequestParameters = {
@@ -135,13 +145,14 @@ app.get(
       }
     }
 
-    // fetch news for specified game
+    // fetch news for game that had lowest edit distance when compared to user provided game name
     const newsData = await fetch(
       `http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${gameInfo.appid}&count=${newsRequestParameters.newsCount}&maxlength=${newsRequestParameters.newsLength}&format=json`
     );
 
     const gameNews = await newsData.json();
 
+    // sort news based on user provided input
     if (newsRequestParameters.dateSort) {
       gameNews.appnews.newsitems = sortNews(
         gameNews.appnews.newsitems,
@@ -149,13 +160,13 @@ app.get(
       );
     }
 
-    // create object that will hold all information that was requested into a more readable format
+    // create response object that will hold all news information that was requested by user in a more readable format
     let newsInformation = {
       gameName: gameInfo.gameName,
       newsItems: [],
     };
 
-    // populate response object with relevent information
+    // populate response object with news information
     for (let i = 0; i < gameNews.appnews.newsitems.length; i++) {
       newsInformation.newsItems.push({
         title: gameNews.appnews.newsitems[i].title,
