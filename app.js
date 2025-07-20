@@ -1,10 +1,12 @@
 const express = require("express");
+const logger = require("morgan");
+const mainRoutes = require("./routes/main");
 
 const app = express();
-const mainRoutes = require("./routes/main");
 
 // middleware
 app.use(express.json());
+app.use(logger("dev"));
 
 // routes
 app.use("/", mainRoutes);
